@@ -1,20 +1,33 @@
 import tkinter as tk
+from tkinter import filedialog
 
 root = tk.Tk()
 frame = tk.Frame(root)
 frame.pack()
 
+def giveFile():
+    filename=filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    return filename
+
 def pixelization():
-    print("pixelization func works")
+    print("pixel button pressed")
+    fileChosen = giveFile()
+    print(fileChosen)
 
 def triangulation():
     print("triangulation func works")
+    fileChosen = giveFile()
+    print(fileChosen)
 
 def segmentation():
     print("segmentation func works")
+    fileChosen = giveFile()
+    print(fileChosen)
 
 def allEffects():
     print("allEffects func works")
+    fileChosen = giveFile()
+    print(fileChosen)
 
 pixelButton = tk.Button(frame, text="Пикселизация", command=pixelization)
 pixelButton.pack(side=tk.LEFT)
