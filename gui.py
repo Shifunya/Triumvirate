@@ -8,8 +8,17 @@ frame.pack()
 
 def giveFile():
     filename = filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
-    
-    inputImg = cv2.imread(filename)
+    return filename
+
+def saveFile(outputImg):
+    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    cv2.imwrite(fileToSave, outputImg)
+
+def pixelization():
+    print("pixel button pressed")
+    fileChosen = giveFile()
+
+    inputImg = cv2.imread(fileChosen)
     height, width = inputImg.shape[:2]
     w, h = (16, 16)
     temp = cv2.resize(inputImg, (w, h), interpolation=cv2.INTER_LINEAR)
@@ -17,17 +26,9 @@ def giveFile():
 
     cv2.imshow('Output', outputImg)
 
-    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
-    cv2.imwrite(fileToSave, outputImg)
+    saveFile(outputImg)    
 
     cv2.waitKey(0)
-    
-    return filename
-
-def pixelization():
-    print("pixel button pressed")
-    fileChosen = giveFile()
-    print(fileChosen)
 
 def triangulation():
     print("triangulation func works")
