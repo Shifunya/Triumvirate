@@ -7,7 +7,7 @@ frame = tk.Frame(root)
 frame.pack()
 
 def giveFile():
-    filename=filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    filename = filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
     
     inputImg = cv2.imread(filename)
     height, width = inputImg.shape[:2]
@@ -16,6 +16,9 @@ def giveFile():
     outputImg = cv2.resize(temp, (width, height), interpolation=cv2.INTER_NEAREST)
 
     cv2.imshow('Output', outputImg)
+
+    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    cv2.imwrite(fileToSave, outputImg)
 
     cv2.waitKey(0)
     
