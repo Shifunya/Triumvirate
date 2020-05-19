@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
-import cv2
+import numpy as np
+import cv2 
+import matplotlib
 
 root = tk.Tk()
 frame = tk.Frame(root)
@@ -38,7 +40,19 @@ def triangulation():
 def segmentation():
     print("segmentation func works")
     fileChosen = giveFile()
-    print(fileChosen)
+
+    inputImg = cv2.imread(fileChosen, cv2.IMREAD_COLOR)
+    inputImg_gray = cv2.cvtColor(inputImg, cv2.COLOR_BGR2GRAY)
+    
+    filt = cv2.medianBlur(inputImg_gray, 9)
+    filt = cv2.blur(filt, (3,3))
+    
+    edges = cv2.Canny(filt, 10, 50)
+    cv2.imshow('output', edges)
+
+    saveFile(edges)    
+
+    cv2.waitKey(0)
 
 def allEffects():
     print("allEffects func works")
