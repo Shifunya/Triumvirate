@@ -3,6 +3,8 @@ from tkinter import filedialog
 import numpy as np
 import cv2 
 import matplotlib
+import pdb
+
 
 root = tk.Tk()
 frame = tk.Frame(root)
@@ -30,7 +32,7 @@ def rect_contains(rect, point):
 def draw_delaunay(img, subdiv, delaunay_color):
     triangleList = subdiv.getTriangleList();
     height, width = img.shape[:2]
-    r = (0, 0, width, height)
+    r = (0, 0, height, width)
 
     for t in triangleList:
         pt1 = (t[0], t[1])
@@ -41,6 +43,35 @@ def draw_delaunay(img, subdiv, delaunay_color):
             cv2.line(img, pt1, pt2, delaunay_color, 1)
             cv2.line(img, pt2, pt3, delaunay_color, 1)
             cv2.line(img, pt3, pt1, delaunay_color, 1)
+
+def draw_all(inputImg, outputImg, subdiv):
+    triangleList = subdiv.getTriangleList();
+    height, width = inputImg.shape[:2]
+    r = (0, 0, height, width)
+
+    for t in triangleList:
+        pt1 = (t[0], t[1])
+        pt2 = (t[2], t[3])
+        pt3 = (t[4], t[5])
+        poly = np.array( [pt1,pt2,pt3] )
+
+        M = cv2.moments(poly)
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+
+        #colour1 = inputImg[int(t[1]), int(t[0])]
+        #colour2 = inputImg[int(t[3]), int(t[2])]
+        #colour3 = inputImg[int(t[5]), int(t[4])]
+
+        resultRed = int(inputImg[cY, cX][0])
+        resultGreen = int(inputImg[cY, cX][1])
+        resultBlue = int(inputImg[cY, cX][2])
+
+        print(f"Red: {inputImg[cY, cX][0]}, Green: {inputImg[cY, cX][1]}, Blue: {inputImg[cY, cX][2]}")
+        
+        if rect_contains(r, pt1) and rect_contains(r, pt2) and rect_contains(r, pt3):
+            #pdb.set_trace()
+            cv2.fillPoly(outputImg, np.int32([poly]), (resultRed, resultGreen, resultBlue))
 
 def pixelization():
     print("pixel button pressed")
@@ -77,9 +108,9 @@ def triangulation():
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt,0.07*cv2.arcLength(cnt,True),True)
         for point in approx:
-            points.append((point[0][1], point[0][0]))
+            points.append((point[0][0],point[0][1]))
 
-    rect = (0, 0, height, width)
+    rect = (0, 0, width, height)
 
     subdiv = cv2.Subdiv2D(rect);
 
@@ -114,7 +145,45 @@ def segmentation():
 
 def allEffects():
     print("allEffects func works")
+    #
+
+    #TODO: add interpolation by combining RGB channels of triangle vertices
     fileChosen = giveFile()
+    inputImg = cv2.imread(fileChosen)
+    height, width = inputImg.shape[:2]
+
+    outputImg = np.zeros((width,height,3), dtype=np.uint8)
+    outputImg.fill(255)
+
+    edges = cv2.Canny(inputImg, 100, 200)
+
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+    points = []
+
+    for cnt in contours:
+        approx = cv2.approxPolyDP(cnt,0.07*cv2.arcLength(cnt,True),True)
+        for point in approx:
+            points.append((point[0][0],point[0][1]))
+
+    rect = (0, 0, width, height)
+
+    subdiv = cv2.Subdiv2D(rect);
+
+    print(f"Height: {height}")
+    print(f"Width: {width}")
+
+    for p in points:
+        print(p)
+        subdiv.insert(p)
+
+    draw_all(inputImg, outputImg, subdiv)
+
+    #cv2.drawContours(outputImg, [points], -1, (0,255,0), 3)
+    #cv2.fillPoly(outputImg, [points], color=(255,0,0))
+
+    cv2.imshow('output', outputImg)
+
     print(fileChosen)
 
 pixelButton = tk.Button(frame, text="Пикселизация", command=pixelization)
