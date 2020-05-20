@@ -91,6 +91,8 @@ def triangulation():
 
     cv2.imshow('Output', outputImg)
 
+    saveFile(outputImg)
+
     cv2.waitKey(0)
 
 def segmentation():
