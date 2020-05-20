@@ -31,7 +31,7 @@ def rect_contains(rect, point):
 def draw_delaunay(img, subdiv, delaunay_color):
     triangleList = subdiv.getTriangleList();
     height, width = img.shape[:2]
-    r = (0, 0, height, width)
+    r = (0, 0, width, height)
 
     for t in triangleList:
         pt1 = (t[0], t[1])
@@ -46,7 +46,7 @@ def draw_delaunay(img, subdiv, delaunay_color):
 def draw_all(inputImg, outputImg, subdiv):
     triangleList = subdiv.getTriangleList();
     height, width = inputImg.shape[:2]
-    r = (0, 0, height, width)
+    r = (0, 0, width, height)
 
     for t in triangleList:
         pt1 = (t[0], t[1])
@@ -95,11 +95,12 @@ def triangulation():
     points = []
 
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt,0.07*cv2.arcLength(cnt,True),True)
+        approx = cv2.approxPolyDP(cnt,0.03*cv2.arcLength(cnt,True),True)
         for point in approx:
             points.append((point[0][0],point[0][1]))
 
     rect = (0, 0, width, height)
+    print(rect)
 
     subdiv = cv2.Subdiv2D(rect);
 
@@ -135,7 +136,7 @@ def allEffects():
     inputImg = cv2.imread(fileChosen)
     height, width = inputImg.shape[:2]
 
-    outputImg = np.zeros((width,height,3), dtype=np.uint8)
+    outputImg = np.zeros((height,width,3), dtype=np.uint8)
     outputImg.fill(255)
 
     edges = cv2.Canny(inputImg, 100, 200)
@@ -145,7 +146,7 @@ def allEffects():
     points = []
 
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt,0.07*cv2.arcLength(cnt,True),True)
+        approx = cv2.approxPolyDP(cnt,0.03*cv2.arcLength(cnt,True),True)
         for point in approx:
             points.append((point[0][0],point[0][1]))
 
