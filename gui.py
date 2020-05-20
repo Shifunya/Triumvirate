@@ -3,7 +3,6 @@ from tkinter import filedialog
 import numpy as np
 import cv2 
 import matplotlib
-import pdb
 
 
 root = tk.Tk()
@@ -59,24 +58,15 @@ def draw_all(inputImg, outputImg, subdiv):
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
 
-        #colour1 = inputImg[int(t[1]), int(t[0])]
-        #colour2 = inputImg[int(t[3]), int(t[2])]
-        #colour3 = inputImg[int(t[5]), int(t[4])]
-
         resultRed = int(inputImg[cY, cX][0])
         resultGreen = int(inputImg[cY, cX][1])
         resultBlue = int(inputImg[cY, cX][2])
-
-        print(f"Red: {inputImg[cY, cX][0]}, Green: {inputImg[cY, cX][1]}, Blue: {inputImg[cY, cX][2]}")
         
         if rect_contains(r, pt1) and rect_contains(r, pt2) and rect_contains(r, pt3):
-            #pdb.set_trace()
             cv2.fillPoly(outputImg, np.int32([poly]), (resultRed, resultGreen, resultBlue))
 
 def pixelization():
-    print("pixel button pressed")
     fileChosen = giveFile()
-    print(fileChosen)
 
     inputImg = cv2.imread(fileChosen)
     height, width = inputImg.shape[:2]
@@ -91,7 +81,6 @@ def pixelization():
     cv2.waitKey(0)
 
 def triangulation():
-    print("triangulation func works")
     fileChosen = giveFile()
 
     inputImg = cv2.imread(fileChosen)
@@ -115,7 +104,6 @@ def triangulation():
     subdiv = cv2.Subdiv2D(rect);
 
     for p in points:
-        print(p)
         subdiv.insert(p)
 
     draw_delaunay(outputImg, subdiv, (0, 255, 0))
@@ -127,7 +115,6 @@ def triangulation():
     cv2.waitKey(0)
 
 def segmentation():
-    print("segmentation func works")
     fileChosen = giveFile()
 
     inputImg = cv2.imread(fileChosen, cv2.IMREAD_COLOR)
@@ -144,10 +131,6 @@ def segmentation():
     cv2.waitKey(0)
 
 def allEffects():
-    print("allEffects func works")
-    #
-
-    #TODO: add interpolation by combining RGB channels of triangle vertices
     fileChosen = giveFile()
     inputImg = cv2.imread(fileChosen)
     height, width = inputImg.shape[:2]
@@ -174,17 +157,15 @@ def allEffects():
     print(f"Width: {width}")
 
     for p in points:
-        print(p)
         subdiv.insert(p)
 
     draw_all(inputImg, outputImg, subdiv)
 
-    #cv2.drawContours(outputImg, [points], -1, (0,255,0), 3)
-    #cv2.fillPoly(outputImg, [points], color=(255,0,0))
-
     cv2.imshow('output', outputImg)
 
-    print(fileChosen)
+    saveFile(outputImg)    
+
+    cv2.waitKey(0)
 
 pixelButton = tk.Button(frame, text="Пикселизация", command=pixelization)
 pixelButton.pack(side=tk.LEFT)
