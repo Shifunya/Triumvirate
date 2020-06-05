@@ -1,6 +1,8 @@
 # Triumvirate
 Triangular pixelization of image based on color segmentation
 
+Heavily inspired by the one and only https://github.com/gregzaal/Useless-Tools
+
 This is one of my silly projects. It can do several effects:
 
 - Pixelization: this effect will literally pixelate the picture
