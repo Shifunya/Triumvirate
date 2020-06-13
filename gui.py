@@ -7,6 +7,7 @@ import pkg_resources.py2_warn
 
 
 root = tk.Tk()
+root.title('Triumvirate')
 frame = tk.Frame(root)
 frame.pack()
 
@@ -169,16 +170,16 @@ def allEffects():
 
     cv2.waitKey(0)
 
-pixelButton = tk.Button(frame, text="Пикселизация", command=pixelization)
+pixelButton = tk.Button(frame, text="Pixelization", command=pixelization)
 pixelButton.pack(side=tk.LEFT)
 
-triangButton = tk.Button(frame, text="Триангуляция", command=triangulation)
+triangButton = tk.Button(frame, text="Triangulation", command=triangulation)
 triangButton.pack(side=tk.LEFT)
 
-segmButton = tk.Button(frame, text="Цветовая сегментация", command=segmentation)
+segmButton = tk.Button(frame, text="Color segmentation", command=segmentation)
 segmButton.pack(side=tk.LEFT)
 
-allButton = tk.Button(frame, text="Все эффекты", command=allEffects)
+allButton = tk.Button(frame, text="All effects", command=allEffects)
 allButton.pack(side=tk.LEFT)
 
 root.mainloop()
