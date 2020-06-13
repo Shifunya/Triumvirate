@@ -16,7 +16,7 @@ def giveFile():
     return filename
 
 def saveFile(outputImg):
-    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
     cv2.imwrite(fileToSave, outputImg)
 
 def rect_contains(rect, point):
