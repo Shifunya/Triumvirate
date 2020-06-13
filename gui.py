@@ -3,6 +3,7 @@ from tkinter import filedialog
 import numpy as np
 import cv2 
 import matplotlib
+import pkg_resources.py2_warn
 
 
 root = tk.Tk()
