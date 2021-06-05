@@ -12,11 +12,11 @@ frame = tk.Frame(root)
 frame.pack()
 
 def giveFile():
-    filename = filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    filename = filedialog.askopenfilename(initialdir=".",title="Choose a picture",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png"))).encode("utf-8")
     return filename
 
 def saveFile(outputImg):
-    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png"))).encode("utf-8")
     cv2.imwrite(fileToSave, outputImg)
 
 def rect_contains(rect, point):
