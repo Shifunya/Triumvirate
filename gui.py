@@ -3,7 +3,6 @@ from tkinter import filedialog
 import numpy as np
 import cv2 
 import matplotlib
-import pkg_resources.py2_warn
 
 
 root = tk.Tk()
@@ -16,8 +15,8 @@ def giveFile():
     return filename
 
 def saveFile(outputImg):
-    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
-    cv2.imwrite(fileToSave, outputImg)
+    filepathToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    cv2.imencode("." + filepathToSave.split('.')[-1], outputImg)[1].tofile(filepathToSave)
 
 def rect_contains(rect, point):
     if point[0] < rect[0]:
@@ -36,9 +35,9 @@ def draw_delaunay(img, subdiv, delaunay_color):
     r = (0, 0, width, height)
 
     for t in triangleList:
-        pt1 = (t[0], t[1])
-        pt2 = (t[2], t[3])
-        pt3 = (t[4], t[5])
+        pt1 = (int(t[0]), int(t[1]))
+        pt2 = (int(t[2]), int(t[3]))
+        pt3 = (int(t[4]), int(t[5]))
         
         if rect_contains(r, pt1) and rect_contains(r, pt2) and rect_contains(r, pt3):
             cv2.line(img, pt1, pt2, delaunay_color, 1)
@@ -70,7 +69,7 @@ def draw_all(inputImg, outputImg, subdiv):
 def pixelization():
     fileChosen = giveFile()
 
-    inputImg = cv2.imread(fileChosen)
+    inputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     height, width = inputImg.shape[:2]
     w, h = (16, 16)
     temp = cv2.resize(inputImg, (w, h), interpolation=cv2.INTER_LINEAR)
@@ -85,10 +84,10 @@ def pixelization():
 def triangulation():
     fileChosen = giveFile()
 
-    inputImg = cv2.imread(fileChosen)
+    inputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     height, width = inputImg.shape[:2]
 
-    outputImg = cv2.imread(fileChosen)
+    outputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
 
     edges = cv2.Canny(inputImg, 100, 200)
 
@@ -99,10 +98,9 @@ def triangulation():
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt,0.03*cv2.arcLength(cnt,True),True)
         for point in approx:
-            points.append((point[0][0],point[0][1]))
+            points.append((int(point[0][0]),int(point[0][1])))
 
     rect = (0, 0, width, height)
-    print(rect)
 
     subdiv = cv2.Subdiv2D(rect);
 
@@ -120,7 +118,7 @@ def triangulation():
 def segmentation():
     fileChosen = giveFile()
 
-    inputImg = cv2.imread(fileChosen, cv2.IMREAD_COLOR)
+    inputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     inputImg_gray = cv2.cvtColor(inputImg, cv2.COLOR_BGR2GRAY)
     
     filt = cv2.medianBlur(inputImg_gray, 9)
@@ -135,7 +133,7 @@ def segmentation():
 
 def allEffects():
     fileChosen = giveFile()
-    inputImg = cv2.imread(fileChosen)
+    inputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     height, width = inputImg.shape[:2]
 
     outputImg = np.zeros((height,width,3), dtype=np.uint8)
@@ -150,17 +148,14 @@ def allEffects():
     for cnt in contours:
         approx = cv2.approxPolyDP(cnt,0.03*cv2.arcLength(cnt,True),True)
         for point in approx:
-            points.append((point[0][0],point[0][1]))
+            points.append((int(point[0][0]),int(point[0][1])))
 
     rect = (0, 0, width, height)
 
     subdiv = cv2.Subdiv2D(rect);
 
-    print(f"Height: {height}")
-    print(f"Width: {width}")
-
     for p in points:
-        subdiv.insert(p)
+       subdiv.insert(p)
 
     draw_all(inputImg, outputImg, subdiv)
 
