@@ -3,7 +3,6 @@ from tkinter import filedialog
 import numpy as np
 import cv2 
 import matplotlib
-#import pkg_resources.py2_warn
 
 
 root = tk.Tk()
@@ -16,8 +15,8 @@ def giveFile():
     return filename
 
 def saveFile(outputImg):
-    fileToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
-    cv2.imwrite(fileToSave, outputImg)
+    filepathToSave = filedialog.asksaveasfilename(initialdir=".",title="Save as",defaultextension="*.*",filetypes=(("JPG","*.jpg"),("JPEG","*.jpeg"),("PNG","*.png")))
+    cv2.imencode("." + filepathToSave.split('.')[-1], outputImg)[1].tofile(filepathToSave)
 
 def rect_contains(rect, point):
     if point[0] < rect[0]:
@@ -102,7 +101,6 @@ def triangulation():
             points.append((int(point[0][0]),int(point[0][1])))
 
     rect = (0, 0, width, height)
-    print(rect)
 
     subdiv = cv2.Subdiv2D(rect);
 
@@ -135,7 +133,6 @@ def segmentation():
 
 def allEffects():
     fileChosen = giveFile()
-    print(fileChosen)
     inputImg = cv2.imdecode(np.fromfile(fileChosen, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
     height, width = inputImg.shape[:2]
 
@@ -156,9 +153,6 @@ def allEffects():
     rect = (0, 0, width, height)
 
     subdiv = cv2.Subdiv2D(rect);
-
-    print(f"Height: {height}")
-    print(f"Width: {width}")
 
     for p in points:
        subdiv.insert(p)
